@@ -1,39 +1,58 @@
-<!DOCTYPE html>
+<DOCTYPE!=htnml>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>限界素因数分解</title>
+  <title>計算機</title>
 </head>
 <body>
-  <h1>限界素因数分解</h1>
+  <h1>計算機</h1>
   <input type="number" id="numberInput" placeholder="数値を入力してください">
   <button id="factorButton">素因数分解</button>
+  <button id="sqrtButton">平方根計算</button>
   <div id="result"></div>
   <script>
     document.getElementById('factorButton').addEventListener('click', function() {
       const number = parseInt(document.getElementById('numberInput').value);
       if (isNaN(number) || number < 2) {
         document.getElementById('result').innerText = '2以上の整数なｗｗｗｗ';
-        return;
-    }
-    
-    const factors = [];
-    let n = number;
-    
-    for (let i = 2; i <= Math.sqrt(n); i++) {
-      while (n % i === 0) {
-        factors.push(i);
-        n /= i;
+        return; 
+
       }
-    }
-    
-    if (n > 1) {
-      factors.push(n);
-    }
-    
-    document.getElementById('result').innerText = `素因数分解結果: ${factors.join(' × ')}`;
-  });
-</script>
+
+      const factors = [];
+      let n = number;
+
+      for (let i = 2; i <= Math.sqrt(n); i++) {
+        while (n % i === 0) {
+          factors.push(i);
+          n /= i;
+        }
+      }
+
+      if (n > 1) {
+        factors.push(n);
+      }
+
+      document.getElementById('result').innerText = `素因数分解結果: ${factors.join(' × ')}`;
+    });
+
+    document.getElementById('sqrtButton').addEventListener('click', function() {
+      const number = Number(document.getElementById('numberInput').value);
+
+      if (isNaN(number)) {
+        document.getElementById('result').innerText = '数値を入力してください';
+        return;
+      }
+
+      if (number < 0) {
+        document.getElementById('result').innerText = '負の数の平方根は計算できません';
+        return;
+      }
+
+      const result = Math.sqrt(number);
+      document.getElementById('result').innerText = `平方根: ${result}`;
+    });
+  </script>
 
 </body>
 </html>
