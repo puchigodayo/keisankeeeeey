@@ -1,307 +1,39 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>現在地マップ</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#080b10;
-    --panel:#101722;
-    --panel-2:#161f2d;
-    --line:#223047;
-    --amber:#f2a65a;
-    --teal:#3fa7a0;
-    --text:#e7ecf3;
-    --muted:#7c8ba6;
-    --danger:#e2725b;
-  }
-  *{box-sizing:border-box;}
-  html,body{height:100%;margin:0;}
-  body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:'Space Grotesk',system-ui,sans-serif;
-    overflow:hidden;
-  }
-  #map{position:absolute;inset:0;z-index:1;filter:saturate(0.85) brightness(0.95);}
-
-  /* ---------- Top bar ---------- */
-  #topbar{
-    position:absolute;top:0;left:0;right:0;z-index:500;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:14px 16px;
-    background:linear-gradient(180deg,rgba(8,11,16,0.85),rgba(8,11,16,0));
-    pointer-events:none;
-  }
-  #topbar > *{pointer-events:auto;}
-  .coords{
-    font-family:'JetBrains Mono',monospace;
-    font-size:12.5px;
-    color:var(--muted);
-    background:rgba(16,23,34,0.7);
-    border:1px solid var(--line);
-    padding:8px 12px;
-    border-radius:10px;
-    backdrop-filter:blur(6px);
-  }
-  .coords b{color:var(--amber);font-weight:500;}
-  #lockBtn{
-    background:rgba(16,23,34,0.7);
-    border:1px solid var(--line);
-    color:var(--text);
-    width:38px;height:38px;
-    border-radius:10px;
-    cursor:pointer;
-    font-size:16px;
-    backdrop-filter:blur(6px);
-  }
-  #lockBtn:hover{border-color:var(--amber);}
-
-  #recenterBtn{
-    position:absolute;bottom:24px;right:16px;z-index:500;
-    background:var(--panel);
-    border:1px solid var(--line);
-    color:var(--amber);
-    width:46px;height:46px;
-    border-radius:50%;
-    font-size:20px;
-    cursor:pointer;
-    box-shadow:0 4px 14px rgba(0,0,0,0.4);
-  }
-  #recenterBtn:hover{border-color:var(--amber);}
-
-  /* ---------- Lock screen ---------- */
-  #lock{
-    position:fixed;inset:0;z-index:1000;
-    background:radial-gradient(ellipse at 50% 30%, #0e1520 0%, #05070a 75%);
-    display:flex;align-items:center;justify-content:center;
-    flex-direction:column;
-    text-align:center;
-    padding:24px;
-  }
-  .radar{
-    position:relative;
-    width:150px;height:150px;
-    border-radius:50%;
-    border:1px solid var(--line);
-    margin-bottom:28px;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .radar::before,.radar::after{
-    content:"";position:absolute;border-radius:50%;border:1px solid var(--line);
-  }
-  .radar::before{width:100px;height:100px;}
-  .radar::after{width:50px;height:50px;}
-  .sweep{
-    position:absolute;inset:0;border-radius:50%;
-    background:conic-gradient(from 0deg, rgba(242,166,90,0.55), transparent 35%);
-    animation:spin 3.2s linear infinite;
-  }
-  @keyframes spin{to{transform:rotate(-360deg);}}
-  .dot{
-    width:8px;height:8px;border-radius:50%;background:var(--amber);
-    box-shadow:0 0 12px 3px rgba(242,166,90,0.6);
-    z-index:2;
-  }
-  #lock h1{
-    font-size:19px;font-weight:500;letter-spacing:0.02em;margin:0 0 6px;
-  }
-  #lock p.sub{
-    color:var(--muted);font-size:13px;margin:0 0 26px;max-width:280px;
-  }
-  #pwForm{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:260px;}
-  #pwInput{
-    width:100%;
-    background:var(--panel);
-    border:1px solid var(--line);
-    color:var(--text);
-    font-family:'JetBrains Mono',monospace;
-    font-size:16px;
-    letter-spacing:0.15em;
-    text-align:center;
-    padding:13px 14px;
-    border-radius:10px;
-    outline:none;
-  }
-  #pwInput:focus{border-color:var(--amber);}
-  .masked{ -webkit-text-security:disc; text-security:disc; }
-  #pwSubmit{
-    width:100%;
-    background:var(--amber);
-    color:#1a1206;
-    border:none;
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:700;
-    font-size:14px;
-    padding:12px 14px;
-    border-radius:10px;
-    cursor:pointer;
-    letter-spacing:0.02em;
-  }
-  #pwSubmit:hover{filter:brightness(1.06);}
-  #pwMsg{
-    font-size:12.5px;min-height:16px;color:var(--danger);
-  }
-  #pwHint{
-    margin-top:22px;font-size:11.5px;color:var(--muted);
-  }
-  #resetLink{
-    color:var(--teal);cursor:pointer;text-decoration:underline;text-underline-offset:2px;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>限界素因数分解</title>
 </head>
 <body>
-
-<div id="lock">
-  <div class="radar"><div class="sweep"></div><div class="dot"></div></div>
-  <h1 id="lockTitle">現在地マップ</h1>
-  <p class="sub" id="lockSub">このページは鍵つきです。合言葉を入力してください。</p>
-  <form id="pwForm">
-    <input id="pwInput" type="text" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" class="masked" placeholder="合言葉（ひらがな可）" />
-    <button id="pwSubmit" type="submit">解除する</button>
-    <div id="pwMsg"></div>
-  </form>
-  <div id="pwHint"></div>
-</div>
-
-<div id="topbar" style="display:none;">
-  <div class="coords" id="coordsBox">位置情報を取得中…</div>
-  <button id="lockBtn" title="ロックする">🔒</button>
-</div>
-<button id="recenterBtn" title="現在地に戻る" style="display:none;">◎</button>
-<div id="map"></div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-/* ====== 設定 ====== */
-const SESSION_DAYS = 7;
-const SESSION_MS = SESSION_DAYS * 24 * 60 * 60 * 1000;
-const LS_SESSION = 'lm_session_until_v1';
-// 合言葉「さいおんじせかい」のSHA-256ハッシュ（固定・変更不可）
-const FIXED_HASH = '55084fd8c20a02966667051e3648d6ebb25beee359914008158e20aefc2f0ff3';
-
-const lockEl = document.getElementById('lock');
-const lockTitle = document.getElementById('lockTitle');
-const lockSub = document.getElementById('lockSub');
-const pwForm = document.getElementById('pwForm');
-const pwInput = document.getElementById('pwInput');
-const pwMsg = document.getElementById('pwMsg');
-const pwHint = document.getElementById('pwHint');
-const topbar = document.getElementById('topbar');
-const recenterBtn = document.getElementById('recenterBtn');
-
-async function sha256(text){
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-
-function hasValidSession(){
-  const until = parseInt(localStorage.getItem(LS_SESSION) || '0', 10);
-  return Date.now() < until;
-}
-
-function grantSession(){
-  localStorage.setItem(LS_SESSION, String(Date.now() + SESSION_MS));
-}
-
-function lockNow(){
-  localStorage.removeItem(LS_SESSION);
-  showLock();
-}
-
-function showLock(){
-  lockEl.style.display = 'flex';
-  topbar.style.display = 'none';
-  recenterBtn.style.display = 'none';
-  pwInput.value = '';
-  pwMsg.textContent = '';
-  lockTitle.textContent = '現在地マップ';
-  lockSub.textContent = 'このページは鍵つきです。合言葉を入力してください。';
-  pwHint.textContent = '一度入力すれば、この端末では約' + SESSION_DAYS + '日間そのまま使えます。';
-  setTimeout(()=>pwInput.focus(), 50);
-}
-
-function unlockUI(){
-  lockEl.style.display = 'none';
-  topbar.style.display = 'flex';
-  recenterBtn.style.display = 'block';
-  initMapIfNeeded();
-}
-
-pwForm.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const val = pwInput.value.trim();
-  if(!val){ pwMsg.textContent = '合言葉を入力してください。'; return; }
-
-  const inputHash = await sha256(val);
-  if(inputHash === FIXED_HASH){
-    grantSession();
-    unlockUI();
-  } else {
-    pwMsg.textContent = '合言葉が違います。';
-    pwInput.value = '';
-    pwInput.focus();
-  }
-});
-
-document.getElementById('lockBtn').addEventListener('click', lockNow);
-
-/* ====== 起動時判定 ====== */
-if(hasValidSession()){
-  unlockUI();
-} else {
-  showLock();
-}
-
-/* ====== 地図まわり ====== */
-let map, marker, accCircle, mapReady = false;
-const coordsBox = document.getElementById('coordsBox');
-
-function initMapIfNeeded(){
-  if(mapReady) return;
-  mapReady = true;
-
-  map = L.map('map', { zoomControl:false }).setView([35.681236, 139.767125], 15);
-  L.control.zoom({ position:'bottomleft' }).addTo(map);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
-
-  if(!('geolocation' in navigator)){
-    coordsBox.textContent = 'この端末では位置情報が使えません';
-    return;
-  }
-
-  navigator.geolocation.watchPosition(pos=>{
-    const { latitude, longitude, accuracy } = pos.coords;
-    coordsBox.innerHTML = `<b>${latitude.toFixed(5)}, ${longitude.toFixed(5)}</b> ・ 誤差 ${Math.round(accuracy)}m`;
-
-    if(!marker){
-      marker = L.circleMarker([latitude, longitude], {
-        radius:7, color:'#f2a65a', fillColor:'#f2a65a', fillOpacity:1, weight:2
-      }).addTo(map);
-      accCircle = L.circle([latitude, longitude], {
-        radius:accuracy, color:'#3fa7a0', fillColor:'#3fa7a0', fillOpacity:0.12, weight:1
-      }).addTo(map);
-      map.setView([latitude, longitude], 16);
-    } else {
-      marker.setLatLng([latitude, longitude]);
-      accCircle.setLatLng([latitude, longitude]);
-      accCircle.setRadius(accuracy);
+  <h1>限界素因数分解</h1>
+  <input type="number" id="numberInput" placeholder="数値を入力してください">
+  <button id="factorButton">素因数分解</button>
+  <div id="result"></div>
+  <script>
+    document.getElementById('factorButton').addEventListener('click', function() {
+      const number = parseInt(document.getElementById('numberInput').value);
+      if (isNaN(number) || number < 2) {
+        document.getElementById('result').innerText = '2以上の整数なｗｗｗｗ';
+        return;
     }
-  }, err=>{
-    coordsBox.textContent = '位置情報の取得を許可してください';
-  }, { enableHighAccuracy:true, maximumAge:5000, timeout:10000 });
-
-  recenterBtn.addEventListener('click', ()=>{
-    if(marker) map.setView(marker.getLatLng(), 16);
+    
+    const factors = [];
+    let n = number;
+    
+    for (let i = 2; i <= Math.sqrt(n); i++) {
+      while (n % i === 0) {
+        factors.push(i);
+        n /= i;
+      }
+    }
+    
+    if (n > 1) {
+      factors.push(n);
+    }
+    
+    document.getElementById('result').innerText = `素因数分解結果: ${factors.join(' × ')}`;
   });
-}
 </script>
+
 </body>
 </html>
